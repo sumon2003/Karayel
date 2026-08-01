@@ -338,7 +338,7 @@ The above identifiers represent three different variables.
 
 # 12. Operators
 
-Karayel supports the following operators.
+Karayel supports standard C-style operators for arithmetic, assignment, comparison, logical operations, and increment/decrement.
 
 ---
 
@@ -350,9 +350,9 @@ Karayel supports the following operators.
 | - | Subtraction |
 | * | Multiplication |
 | / | Division |
-| % | Modulus |
+| % | Modulus (Remainder) |
 
-Example:
+### Example
 
 ```kl
 KL a = 20
@@ -367,23 +367,62 @@ Show(a % b)
 
 ---
 
-## 12.2 Assignment Operator
+## 12.2 Assignment Operators
 
 | Operator | Description |
 |----------|-------------|
 | = | Assign value |
+| += | Add and assign |
+| -= | Subtract and assign |
+| *= | Multiply and assign |
+| /= | Divide and assign |
 
-Example:
+### Example
 
 ```kl
 KL age = 20
 
 age = 25
+
+age += 5
+
+age -= 2
+
+age *= 3
+
+age /= 2
 ```
 
 ---
 
-## 12.3 Comparison Operators
+## 12.3 Increment and Decrement Operators
+
+Karayel supports **postfix increment** and **postfix decrement** operators.
+
+> **Note:** Prefix increment (`++variable`) and prefix decrement (`--variable`) are not supported in Karayel Version 1.0.
+
+| Operator | Description |
+|----------|-------------|
+| ++ | Increment by 1 |
+| -- | Decrement by 1 |
+
+### Example
+
+```kl
+KL count = 0
+
+count++
+
+Show(count)
+
+count--
+
+Show(count)
+```
+
+---
+
+## 12.4 Comparison Operators
 
 | Operator | Description |
 |----------|-------------|
@@ -394,7 +433,7 @@ age = 25
 | >= | Greater Than or Equal |
 | <= | Less Than or Equal |
 
-Example:
+### Example
 
 ```kl
 If(age >= 18){
@@ -406,7 +445,7 @@ If(age >= 18){
 
 ---
 
-## 12.4 Logical Operators
+## 12.5 Logical Operators
 
 | Operator | Description |
 |----------|-------------|
@@ -414,7 +453,7 @@ If(age >= 18){
 | \|\| | Logical OR |
 | ! | Logical NOT |
 
-Example:
+### Example
 
 ```kl
 If(age >= 18 && passed == True){

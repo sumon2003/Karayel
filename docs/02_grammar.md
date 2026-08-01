@@ -89,6 +89,8 @@ A statement represents a complete executable instruction.
 
               | <assignment>
 
+              | <increment_statement>
+
               | <show_statement>
 
               | <if_statement>
@@ -150,16 +152,53 @@ A previously declared variable may receive a new value.
 
 ```bnf
 <assignment> ::= IDENTIFIER '=' <expression> NEWLINE
+
+               | IDENTIFIER '+=' <expression> NEWLINE
+
+               | IDENTIFIER '-=' <expression> NEWLINE
+
+               | IDENTIFIER '*=' <expression> NEWLINE
+
+               | IDENTIFIER '/=' <expression> NEWLINE
 ```
 
-### Example
+### Examples
 
 ```kl
 age = 21
 
+age += 5
+
+age -= 2
+
+age *= 3
+
+age /= 2
+
 name = "Karayel"
 
-cgpa = 3.95
+cgpa = Scan()
+```
+---
+
+# 7. Increment Statement
+
+Karayel supports postfix increment and decrement operators.
+
+### Grammar
+
+```bnf
+<increment_statement> ::= IDENTIFIER '++' NEWLINE
+
+                        | IDENTIFIER '--' NEWLINE
+```
+
+### Examples
+
+```kl
+count++
+
+count--
 ```
 
 ---
