@@ -723,3 +723,215 @@ Functions improve code reusability and readability.
 ---
 
 > **Part 2 Completed**
+
+# 21. Function Calling
+
+A function can be called by using its name followed by parentheses.
+
+Syntax:
+
+```kl
+FunctionName();
+```
+
+Example:
+
+```kl
+Task Welcome(){
+
+    Show("Welcome to Karayel");
+
+}
+
+Welcome();
+```
+
+Functions may optionally return a value using the **Give** keyword.
+
+Example:
+
+```kl
+Task Square(){
+
+    KL number = 5;
+
+    Give number * number;
+
+}
+```
+
+---
+
+# 22. Program Structure
+
+A typical Karayel program consists of:
+
+- Variable declarations
+- Input statements
+- Processing
+- Conditional statements
+- Loops
+- Function definitions
+- Output statements
+
+Example:
+
+```text
+Variable Declaration
+        │
+        ▼
+Input
+        │
+        ▼
+Processing
+        │
+        ▼
+Decision Making
+        │
+        ▼
+Loop (Optional)
+        │
+        ▼
+Output
+```
+
+---
+
+# 23. Complete Example Program
+
+```kl
+:: Simple Karayel Program
+
+KL name = "Sumon";
+KL age = 22;
+
+Show("Name:");
+Show(name);
+
+Show("Age:");
+Show(age);
+
+If(age >= 18){
+
+    Show("Adult");
+
+}
+Else{
+
+    Show("Child");
+
+}
+```
+
+Expected Output:
+
+```text
+Name:
+Sumon
+Age:
+22
+Adult
+```
+
+---
+
+# 24. Language Rules Summary
+
+The following rules must always be followed while writing a Karayel program.
+
+| Rule | Description |
+|------|-------------|
+| Variable declaration | Use `KL` |
+| Output | Use `Show()` |
+| Input | Use `Scan()` |
+| Function declaration | Use `Task` |
+| Return value | Use `Give` |
+| Decision | `If`, `Elif`, `Else` |
+| Loops | `While`, `For` |
+| Boolean values | `True`, `False` |
+| Comments | `::` |
+| Statement ending | `;` Required |
+| Case sensitivity | Case Sensitive |
+
+---
+
+# 25. Language Characteristics
+
+Karayel has the following characteristics.
+
+- Beginner-friendly syntax
+- Automatic type detection
+- Case-sensitive keywords and identifiers
+- Simple function syntax
+- Built-in input and output statements
+- Structured programming support
+- Easy compiler implementation using Flex and Bison
+
+---
+
+# 26. Current Features (Version 1.0)
+
+Karayel Version 1.0 currently supports:
+
+- Variable declaration
+- Variable assignment
+- Automatic type detection
+- Integer values
+- Floating-point values
+- Character values
+- String values
+- Boolean values
+- Arithmetic operators
+- Assignment operator
+- Comparison operators
+- Logical operators
+- Input statement
+- Output statement
+- If statement
+- Elif statement
+- Else statement
+- While loop
+- For loop
+- Function declaration
+- Return statement
+- Single-line comments
+- Multi-line comments
+
+---
+
+# 27. Future Improvements
+
+The following features are planned for future versions of Karayel.
+
+- Arrays
+- Function parameters
+- Recursive functions
+- Switch statement
+- Break statement
+- Continue statement
+- Increment (`++`)
+- Decrement (`--`)
+- File handling
+- User-defined data structures
+
+---
+
+# 28. Version Information
+
+| Item | Value |
+|------|-------|
+| Language | Karayel |
+| Version | 1.0 |
+| File Extension | `.kl` |
+| Compiler Tools | Flex, Bison, GCC |
+| Operating System | Ubuntu Linux |
+
+---
+
+# Conclusion
+
+Karayel is a lightweight educational programming language designed to demonstrate the implementation of compiler construction concepts using Flex and Bison.
+
+The language emphasizes readability, simplicity, and automatic type detection while supporting essential programming constructs such as variables, operators, control flow, input/output, and functions.
+
+Version 1.0 provides the core foundation of the language. Future versions will extend Karayel with additional programming features while preserving its clean and beginner-friendly syntax.
