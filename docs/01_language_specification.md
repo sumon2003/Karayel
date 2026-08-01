@@ -100,11 +100,11 @@ The following words are reserved by the language and **cannot** be used as ident
 Example:
 
 ```kl
-KL Show = 10;     // Error
+KL Show = 10     // Error
 
-KL If = 20;       // Error
+KL If = 20       // Error
 
-KL True = False;  // Error
+KL True = False  // Error
 ```
 
 ---
@@ -150,15 +150,15 @@ The language automatically determines the variable type based on the assigned va
 Examples:
 
 ```kl
-KL age = 20;
+KL age = 20
 
-KL cgpa = 3.90;
+KL cgpa = 3.90
 
-KL name = "Sumon";
+KL name = "Sumon"
 
-KL grade = 'A';
+KL grade = 'A'
 
-KL isStudent = True;
+KL isStudent = True
 ```
 
 ---
@@ -170,15 +170,15 @@ After declaration, a variable may receive a new value.
 Examples:
 
 ```kl
-age = 21;
+age = 21
 
-cgpa = 3.95;
+cgpa = 3.95
 
-name = "Karayel";
+name = "Karayel"
 
-grade = 'B';
+grade = 'B'
 
-isStudent = False;
+isStudent = False
 ```
 
 ---
@@ -190,17 +190,17 @@ A variable may be declared only once within the same scope.
 Correct:
 
 ```kl
-KL age = 20;
+KL age = 20
 
-age = 25;
+age = 25
 ```
 
 Incorrect:
 
 ```kl
-KL age = 20;
+KL age = 20
 
-KL age = 30;
+KL age = 30
 ```
 
 Expected Result:
@@ -228,15 +228,15 @@ Karayel supports automatic type detection for the following data types.
 Examples:
 
 ```kl
-KL age = 20;
+KL age = 20
 
-KL price = 125.50;
+KL price = 125.50
 
-KL name = "Karayel";
+KL name = "Karayel"
 
-KL grade = 'A';
+KL grade = 'A'
 
-KL passed = True;
+KL passed = True
 ```
 
 ---
@@ -298,13 +298,13 @@ Examples:
 Correct:
 
 ```kl
-Show("Hello");
+Show("Hello")
 ```
 
 Incorrect:
 
 ```kl
-show("Hello");
+show("Hello")
 ```
 
 The following keywords are different:
@@ -355,14 +355,14 @@ Karayel supports the following operators.
 Example:
 
 ```kl
-KL a = 20;
-KL b = 10;
+KL a = 20
+KL b = 10
 
-Show(a + b);
-Show(a - b);
-Show(a * b);
-Show(a / b);
-Show(a % b);
+Show(a + b)
+Show(a - b)
+Show(a * b)
+Show(a / b)
+Show(a % b)
 ```
 
 ---
@@ -376,9 +376,9 @@ Show(a % b);
 Example:
 
 ```kl
-KL age = 20;
+KL age = 20
 
-age = 25;
+age = 25
 ```
 
 ---
@@ -399,7 +399,7 @@ Example:
 ```kl
 If(age >= 18){
 
-    Show("Adult");
+    Show("Adult")
 
 }
 ```
@@ -419,7 +419,7 @@ Example:
 ```kl
 If(age >= 18 && passed == True){
 
-    Show("Eligible");
+    Show("Eligible")
 
 }
 ```
@@ -428,23 +428,26 @@ If(age >= 18 && passed == True){
 
 # 13. Statement Termination
 
-Every statement in Karayel must end with a semicolon (`;`).
+Karayel does not use semicolons (``) to terminate statements.
 
-Correct:
+Each statement ends with a **new line**.
 
-```kl
-KL age = 20;
-
-Show(age);
-```
-
-Incorrect:
+### Correct
 
 ```kl
 KL age = 20
+KL name = "Sumon"
 
 Show(age)
 ```
+
+### Incorrect
+
+```kl
+KL age = 20 Show(age)
+```
+
+Multiple statements cannot appear on the same line.
 
 ---
 
@@ -457,7 +460,7 @@ Example:
 ```kl
 If(age >= 18){
 
-    Show("Adult");
+    Show("Adult")
 
 }
 ```
@@ -471,7 +474,7 @@ If(age >= 18){
 
     If(age >= 60){
 
-        Show("Senior Citizen");
+        Show("Senior Citizen")
 
     }
 
@@ -486,45 +489,58 @@ Karayel supports both single-line and multi-line comments.
 
 ---
 
-## 15.1 Single-Line Comment
+## Single-Line Comment
 
 ```kl
 :: This is a single-line comment
 ```
 
+The comment continues until the end of the current line.
+
 ---
 
-## 15.2 Multi-Line Comment
+## Multi-Line Comment
 
 ```kl
 ::
 This is a
-multi-line comment.
+multi-line
+comment.
 ::
 ```
 
-Comments are ignored by the compiler.
+Everything between the opening `::` and the closing `::` is treated as a comment and ignored by the compiler.
 
 ---
 
 # 16. Input Statement
 
-Karayel uses the **Scan** keyword to receive input from the user.
+Karayel uses the **Scan()** function to receive input from the user.
 
-Syntax:
+`Scan()` returns the value entered by the user. Therefore, it must be used as part of an expression, such as during variable declaration or assignment.
+
+### Syntax
 
 ```kl
-Scan(variable);
+KL variable = Scan()
 ```
 
-Example:
+or
 
 ```kl
-KL age;
+variable = Scan()
+```
 
-Scan(age);
+### Examples
 
-Show(age);
+```kl
+KL age = Scan()
+
+KL name = Scan()
+
+Show(age)
+
+Show(name)
 ```
 
 ---
@@ -536,17 +552,17 @@ Karayel uses the **Show** keyword to display information.
 Syntax:
 
 ```kl
-Show(expression);
+Show(expression)
 ```
 
 Examples:
 
 ```kl
-Show("Welcome");
+Show("Welcome")
 
-Show(age);
+Show(age)
 
-Show(age + 10);
+Show(age + 10)
 ```
 
 Multiple Show statements are allowed.
@@ -554,13 +570,13 @@ Multiple Show statements are allowed.
 Example:
 
 ```kl
-Show("Name");
+Show("Name")
 
-Show(name);
+Show(name)
 
-Show("Age");
+Show("Age")
 
-Show(age);
+Show(age)
 ```
 
 ---
@@ -580,7 +596,7 @@ Karayel supports three conditional statements.
 ```kl
 If(age >= 18){
 
-    Show("Adult");
+    Show("Adult")
 
 }
 ```
@@ -592,12 +608,12 @@ If(age >= 18){
 ```kl
 If(age >= 18){
 
-    Show("Adult");
+    Show("Adult")
 
 }
 Else{
 
-    Show("Child");
+    Show("Child")
 
 }
 ```
@@ -609,22 +625,22 @@ Else{
 ```kl
 If(mark >= 80){
 
-    Show("A+");
+    Show("A+")
 
 }
 Elif(mark >= 70){
 
-    Show("A");
+    Show("A")
 
 }
 Elif(mark >= 60){
 
-    Show("A-");
+    Show("A-")
 
 }
 Else{
 
-    Show("Fail");
+    Show("Fail")
 
 }
 ```
@@ -655,13 +671,13 @@ While(condition){
 Example:
 
 ```kl
-KL i = 1;
+KL i = 1
 
 While(i <= 5){
 
-    Show(i);
+    Show(i)
 
-    i = i + 1;
+    i = i + 1
 
 }
 ```
@@ -673,7 +689,7 @@ While(i <= 5){
 Syntax:
 
 ```kl
-For(initialization; condition; update){
+For(initialization condition update){
 
 }
 ```
@@ -681,9 +697,9 @@ For(initialization; condition; update){
 Example:
 
 ```kl
-For(KL i = 1; i <= 5; i = i + 1){
+For(KL i = 1 i <= 5 i = i + 1){
 
-    Show(i);
+    Show(i)
 
 }
 ```
@@ -701,7 +717,7 @@ Syntax:
 ```kl
 Task FunctionName(){
 
-    Give value;
+    Give value
 
 }
 ```
@@ -711,9 +727,9 @@ Example:
 ```kl
 Task Square(){
 
-    KL result = 5 * 5;
+    KL result = 5 * 5
 
-    Give result;
+    Give result
 
 }
 ```
@@ -731,7 +747,7 @@ A function can be called by using its name followed by parentheses.
 Syntax:
 
 ```kl
-FunctionName();
+FunctionName()
 ```
 
 Example:
@@ -739,11 +755,11 @@ Example:
 ```kl
 Task Welcome(){
 
-    Show("Welcome to Karayel");
+    Show("Welcome to Karayel")
 
 }
 
-Welcome();
+Welcome()
 ```
 
 Functions may optionally return a value using the **Give** keyword.
@@ -753,9 +769,9 @@ Example:
 ```kl
 Task Square(){
 
-    KL number = 5;
+    KL number = 5
 
-    Give number * number;
+    Give number * number
 
 }
 ```
@@ -802,23 +818,23 @@ Output
 ```kl
 :: Simple Karayel Program
 
-KL name = "Sumon";
-KL age = 22;
+KL name = "Sumon"
+KL age = 22
 
-Show("Name:");
-Show(name);
+Show("Name:")
+Show(name)
 
-Show("Age:");
-Show(age);
+Show("Age:")
+Show(age)
 
 If(age >= 18){
 
-    Show("Adult");
+    Show("Adult")
 
 }
 Else{
 
-    Show("Child");
+    Show("Child")
 
 }
 ```
@@ -850,7 +866,7 @@ The following rules must always be followed while writing a Karayel program.
 | Loops | `While`, `For` |
 | Boolean values | `True`, `False` |
 | Comments | `::` |
-| Statement ending | `;` Required |
+| Statement ending | `` Required |
 | Case sensitivity | Case Sensitive |
 
 ---
