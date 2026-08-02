@@ -39,7 +39,7 @@ Designed with clean syntax and native math/statistical utilities, Karayel simpli
 
 The compiler is structured into four distinct modular pipeline stages:
 
-```text
+
 ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐     ┌─────────────────┐
 │   Source Code   │ ──> │ Lexer (Flex) │ ──> │ Parser (Bison) │ ──> │ AST Execution   │
 │   (*.kl File)   │     │ Tokenization │     │ Syntax Check   │     │ & Runtime Engine│
