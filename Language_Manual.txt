@@ -1,0 +1,253 @@
+================================================================================
+                     KARAYEL PROGRAMMING LANGUAGE
+                          LANGUAGE MANUAL
+================================================================================
+
+Table of Contents:
+1. Overview & File Extension
+2. How to Compile & Run
+3. Basic Syntax & Grammar
+   - Program Structure
+   - Comments
+4. Data Types & Variables
+5. Operators
+6. Input & Output System
+7. Control Flow Constructs
+   - Conditional Statements (IF / ELIF / ELSE)
+   - Loops (WHILE / FOR)
+8. Built-in Math & Statistical Utilities
+9. Functions / Tasks
+10. Full Code Example
+
+================================================================================
+1. OVERVIEW & FILE EXTENSION
+================================================================================
+Karayel is an imperative, dynamically-evaluated domain-specific language 
+built using C, Flex, and Bison.
+
+- Source Code File Extension: .kl
+- Example File: main.kl or test.kl
+
+================================================================================
+2. HOW TO COMPILE & RUN
+================================================================================
+Prerequisites:
+- GCC compiler
+- Flex (Fast Lexical Analyzer)
+- Bison (Parser Generator)
+- Make utility
+
+Steps to Compile the Compiler:
+  $ make clean && make
+
+Steps to Execute a Karayel Program:
+  $ ./karayel <filename>.kl
+
+Example:
+  $ ./karayel examples/test.kl
+
+================================================================================
+3. BASIC SYNTAX & GRAMMAR
+================================================================================
+- Code consists of statements executed top-to-bottom.
+- Identifiers are case-sensitive.
+- Blocks or scopes are typically enclosed using standard block formatting or 
+  keyword delimiters depending on statement structures.
+
+Comments:
+- Single-line comments start with: //
+  Example:
+    // This is a single-line comment
+
+================================================================================
+4. DATA TYPES & VARIABLES
+================================================================================
+Karayel supports standard numerical and string types. Variable declarations 
+are handled via the 'KL' keyword.
+
+Declaration Syntax:
+  KL <variable_name> = <expression>
+
+Examples:
+  KL x = 10
+  KL name = "Karayel"
+  KL pi = 3.14
+
+Re-assignment Syntax:
+  <variable_name> = <expression>
+
+Example:
+  x = x + 5
+
+================================================================================
+5. OPERATORS
+================================================================================
+Arithmetic Operators:
+  +   Addition
+  -   Subtraction
+  *   Multiplication
+  /   Division
+  %   Modulo (Remainder)
+
+Relational / Comparison Operators:
+  ==  Equal to
+  !=  Not equal to
+  <   Less than
+  >   Greater than
+  <=  Less than or equal to
+  >=  Greater than or equal to
+
+Logical Operators:
+  &&  Logical AND
+  ||  Logical OR
+  !   Logical NOT
+
+================================================================================
+6. INPUT & OUTPUT SYSTEM
+================================================================================
+Printing Output (SHOW):
+'SHOW' is a variadic output function that auto-casts and concatenates multiple 
+expressions, strings, and variable values.
+
+Syntax:
+  SHOW(<item1>, <item2>, ...)
+
+Example:
+  KL age = 20
+  SHOW("User age is: ", age)
+
+Reading Input (SCAN):
+'SCAN' reads integer values interactively from the terminal. An optional prompt 
+string can be passed.
+
+Syntax:
+  SCAN("<Prompt Message>")
+
+Example:
+  KL num = SCAN("Enter a number: ")
+
+================================================================================
+7. CONTROL FLOW CONSTRUCTS
+================================================================================
+Conditional Statements:
+Syntax:
+  IF (<condition>) {
+      // Body executed if condition is true
+  } ELIF (<condition>) {
+      // Body executed if elif condition is true
+  } ELSE {
+      // Body executed if all conditions fail
+  }
+
+Example:
+  KL score = 85
+  IF (score >= 80) {
+      SHOW("Grade: A+")
+  } ELSE {
+      SHOW("Grade: Below A+")
+  }
+
+Loops:
+
+1. WHILE Loop Syntax:
+   WHILE (<condition>) {
+       // Statements
+   }
+
+   Example:
+     KL count = 1
+     WHILE (count <= 5) {
+         SHOW("Count is: ", count)
+         count = count + 1
+     }
+
+2. FOR Loop Syntax:
+   FOR (<init>; <condition>; <step>) {
+       // Statements
+   }
+
+   Example:
+     FOR (KL i = 1; i <= 5; i = i + 1) {
+         SHOW("Iteration: ", i)
+     }
+
+================================================================================
+8. BUILT-IN MATH & STATISTICAL UTILITIES
+================================================================================
+Karayel includes native high-level mathematical and statistical operators:
+
+1. FACTORIAL(n)
+   Computes the factorial of integer 'n'.
+   Example:
+     SHOW("Factorial of 5: ", FACTORIAL(5))  // Output: 120
+
+2. IS_PRIME(n)
+   Checks if integer 'n' is a prime number. Returns 1 if true, 0 if false.
+   Example:
+     SHOW("Is 17 prime? ", IS_PRIME(17))     // Output: 1
+
+3. FIBO(n)
+   Returns the n-th Fibonacci number in the sequence.
+   Example:
+     SHOW("10th Fibonacci: ", FIBO(10))      // Output: 55
+
+4. MAX(val1, val2, ...)
+   Evaluates and returns the maximum value from a list of numbers.
+   Example:
+     SHOW("Max value: ", MAX(10, 45, 23, 89)) // Output: 89
+
+5. MIN(val1, val2, ...)
+   Evaluates and returns the minimum value from a list of numbers.
+   Example:
+     SHOW("Min value: ", MIN(10, 45, 23, 89)) // Output: 10
+
+6. AVG(val1, val2, ...)
+   Computes the average value of a list of numbers.
+   Example:
+     SHOW("Average: ", AVG(10, 20, 30))       // Output: 20
+
+================================================================================
+9. FUNCTIONS / TASKS
+================================================================================
+Functions in Karayel are declared using the 'TASK' keyword and can return 
+values using 'GIVE'.
+
+Syntax:
+  TASK <function_name>(<params>) {
+      // Function Body
+      GIVE <expression>
+  }
+
+================================================================================
+10. FULL CODE EXAMPLE
+================================================================================
+Save the following code inside a file named 'demo.kl':
+
+// --- Karayel Demonstration Script ---
+
+KL num = 5
+SHOW("Calculating stats for number: ", num)
+
+// 1. Math Functions
+SHOW("1. Factorial of ", num, " = ", FACTORIAL(num))
+SHOW("2. Is ", num, " Prime? ", IS_PRIME(num))
+SHOW("3. ", num, "th Fibonacci Number = ", FIBO(num))
+
+// 2. Statistical Functions
+SHOW("4. Max from (15, 85, 42) = ", MAX(15, 85, 42))
+SHOW("5. Min from (15, 85, 42) = ", MIN(15, 85, 42))
+SHOW("6. Average of (10, 20, 30) = ", AVG(10, 20, 30))
+
+// 3. Loops and Logic
+SHOW("--- Loop Demo ---")
+FOR (KL i = 1; i <= 3; i = i + 1) {
+    IF (IS_PRIME(i) == 1) {
+        SHOW("Value ", i, " is Prime!")
+    } ELSE {
+        SHOW("Value ", i, " is Not Prime.")
+    }
+}
+
+================================================================================
+                          END OF LANGUAGE MANUAL
+================================================================================
