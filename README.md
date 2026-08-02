@@ -88,8 +88,9 @@ Ensure you have the following packages installed on your Linux system:
    ```Bash
    ./karayel examples/test.kl
 
-### 📂 Project Structure
+## 📂 Project Structure
 
+```text
 Karayel/
 ├── lexer.l             # Lexical rules & token patterns
 ├── parser.y            # Grammar rules & Bison configurations
