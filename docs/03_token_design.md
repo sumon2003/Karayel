@@ -1,394 +1,185 @@
 # Karayel Token Design
 
+> **Language:** Karayel  
+> **Version:** 1.0  
+
+---
+
+# Table of Contents
+
 1. Introduction
-
 2. Reserved Keywords
-
-3. Literals
-
-4. Identifiers
-
-5. Operators
-
-6. Delimiters
-
-7. Comments
-
-8. Whitespace
-
+3. Built-in Utility Tokens
+4. Literals
+5. Identifiers
+6. Operators
+7. Delimiters
+8. Comments & Whitespace
 9. Token Summary
-
-# Karayel Token Design
-
-> Language: Karayel
->
-> Version: 1.0
 
 ---
 
 # 1. Introduction
 
-This document defines the lexical tokens of the Karayel Programming Language.
+This document defines the lexical tokens of the **Karayel Programming Language**.
 
-During lexical analysis, the source code is scanned character by character and converted into a sequence of tokens.
-
-These tokens are later used by the parser to validate the program according to the language grammar.
+During lexical analysis (`lexer.l`), source code is scanned character-by-character and converted into a sequence of terminal tokens passed to the **GNU Bison** parser.
 
 ---
 
 # 2. Reserved Keywords
 
-The following words are reserved by the Karayel language and cannot be used as identifiers.
+The following reserved words are recognized by the language engine in **UPPERCASE** and cannot be used as identifiers:
 
-| Keyword | Token |
-|----------|-------|
-| KL | KL |
-| Show | SHOW |
-| Scan | SCAN |
-| Task | TASK |
-| Give | GIVE |
-| If | IF |
-| Elif | ELIF |
-| Else | ELSE |
-| While | WHILE |
-| For | FOR |
-| True | TRUE |
-| False | FALSE |
-
-Reserved keywords are **case-insensitive**.
-
-Examples:
-
-```kl
-KL age = 20
-
-Show(age)
-
-If(age > 18){
-
-    Show("Adult")
-
-}
-```
-
-The following declaration is invalid.
-
-```kl
-KL If = 20
-```
-
-Reason:
-
-`If` is a reserved keyword and cannot be used as a variable name.
+| Keyword | Token | Description |
+| :--- | :--- | :--- |
+| `KL` | `KL` | Variable declaration |
+| `SHOW` | `SHOW` | Variadic output print |
+| `SCAN` | `SCAN` | Interactive input reading |
+| `TASK` | `TASK` | Function declaration |
+| `GIVE` | `GIVE` | Return statement |
+| `IF` | `IF` | Conditional IF block |
+| `ELIF` | `ELIF` | Conditional ELIF block |
+| `ELSE` | `ELSE` | Conditional ELSE block |
+| `WHILE` | `WHILE` | WHILE loop structure |
+| `FOR` | `FOR` | FOR loop structure |
 
 ---
 
-# 3. Literals
+# 3. Built-in Utility Tokens
 
-Literals represent constant values in Karayel.
+Karayel includes native tokens mapped to compiler-level mathematical and statistical evaluation functions:
 
-| Literal Type | Token | Example |
-|--------------|-------|---------|
-| Integer | INTEGER | `25` |
-| Float | FLOAT | `3.14` |
-| String | STRING | `"Hello"` |
-| Character | CHARACTER | `'A'` |
-| Boolean | TRUE / FALSE | `True`, `False` |
-
-### Examples
-
-```kl
-KL age = 25
-
-KL cgpa = 3.75
-
-KL grade = 'A'
-
-KL name = "Sumon"
-
-KL passed = True
-```
+| Keyword | Token | Purpose |
+| :--- | :--- | :--- |
+| `FACTORIAL` | `FACTORIAL` | Computes factorial of a value |
+| `IS_PRIME` | `IS_PRIME` | Checks primality (returns 1 or 0) |
+| `FIBO` | `FIBO` | Computes nth Fibonacci number |
+| `MAX` | `MAX` | Variadic maximum evaluator |
+| `MIN` | `MIN` | Variadic minimum evaluator |
+| `AVG` | `AVG` | Variadic average evaluator |
 
 ---
 
-# 4. Identifiers
+# 4. Literals
 
-Identifiers are user-defined names used for variables and functions.
+Literals represent constant atomic values in Karayel.
+
+| Literal Type | Lexical Pattern | Example |
+| :--- | :--- | :--- |
+| **INTEGER** | `[0-9]+` | `25`, `-10` |
+| **FLOAT** | `[0-9]+\.[0-9]+` | `3.1416`, `0.05` |
+| **STRING** | `"([^"\\]|\\.)*"` | `"Hello Karayel"` |
+
+---
+
+# 5. Identifiers
+
+Identifiers are user-defined names for variables and tasks.
 
 ### Rules
-
-- Must begin with a letter (`A-Z` or `a-z`) or underscore (`_`).
-- May contain letters, digits and underscores.
+- Must begin with a letter (`A-Z` or `a-z`) or an underscore (`_`).
+- May contain alphanumeric characters and underscores.
 - Cannot begin with a digit.
-- Cannot be a reserved keyword.
-- Identifiers are **case-sensitive**.
+- Cannot match reserved UPPERCASE keywords.
+- Identifiers are strictly **case-sensitive**.
 
-### Valid Examples
-
-```kl
-age
-
-studentName
-
-_total
-
-CGPA
-
-number1
-```
-
-### Invalid Examples
-
-```kl
-1age
-
-If
-
-Show
-
-KL
-
-student-name
-```
+### Examples
+    KL age = 20
+    KL student_name = "Sumon"
+    KL _total = 100
 
 ---
 
-# 5. Operators
+# 6. Operators
 
-Karayel uses standard C-style operators.
+Karayel defines standard operators for arithmetic, assignment, relational, and logical evaluation.
 
-## Arithmetic Operators
+### Arithmetic Operators
+`+` (PLUS), `-` (MINUS), `*` (MULT), `/` (DIV), `%` (MOD)
 
-| Operator | Meaning |
-|----------|---------|
-| + | Addition |
-| - | Subtraction |
-| * | Multiplication |
-| / | Division |
-| % | Modulus |
+### Assignment Operators
+`=` (ASSIGN), `+=` (PLUS_ASSIGN), `-=` (MINUS_ASSIGN), `*=` (MULT_ASSIGN), `/=` (DIV_ASSIGN)
 
----
+### Relational Operators
+`==` (EQ), `!=` (NEQ), `>` (GT), `<` (LT), `>=` (GTE), `<=` (LTE)
 
-## Assignment Operator
-
-| Operator | Meaning |
-|----------|---------|
-| = | Assignment |
+### Logical Operators
+`&&` (AND), `||` (OR), `!` (NOT)
 
 ---
 
-## Comparison Operators
+# 7. Delimiters
 
-| Operator | Meaning |
-|----------|---------|
-| == | Equal |
-| != | Not Equal |
-| > | Greater Than |
-| < | Less Than |
-| >= | Greater Than or Equal |
-| <= | Less Than or Equal |
+Delimiters separate code constructs, statement blocks, and parameter lists:
 
----
-
-## Logical Operators
-
-| Operator | Meaning |
-|----------|---------|
-| && | Logical AND |
-| \|\| | Logical OR |
-| ! | Logical NOT |
+| Symbol | Token | Purpose |
+| :--- | :--- | :--- |
+| `(` | `LPAREN` | Left Parenthesis |
+| `)` | `RPAREN` | Right Parenthesis |
+| `{` | `LBRACE` | Scope Block Start |
+| `}` | `RBRACE` | Scope Block End |
+| `,` | `COMMA` | Argument/Parameter Separator |
+| `;` | `SEMICOLON` | Loop / Expression Delimiter |
 
 ---
 
-# 6. Delimiters
+# 8. Comments & Whitespace
 
-Delimiters are symbols used to separate different parts of a program.
+### Single-Line Comments
+Starts with `::` and continues until the end of the line.
 
-| Symbol | Token | Description |
-|--------|-------|-------------|
-| ( | LPAREN | Left Parenthesis |
-| ) | RPAREN | Right Parenthesis |
-| { | LBRACE | Left Brace |
-| } | RBRACE | Right Brace |
-| , | COMMA | Separator |
-| NEWLINE | NEWLINE | End of Statement |
+    :: This is a single-line comment
 
-### Example
+### Multi-Line Comments
+Enclosed between `:::` and `:::`.
 
-```kl
-Task Main(){
+    :::
+      Multi-line comment block
+      ignored by Flex lexer.
+    :::
 
-    KL age = Scan()
-
-    Show(age)
-
-}
-```
-
----
-
-# 7. Comments
-
-Comments are ignored by the compiler.
-
-## Single-Line Comment
-
-A single-line comment starts with `::` and continues until the end of the current line.
-
-### Example
-
-```kl
-:: This is a single-line comment
-
-KL age = 20
-```
-
----
-
-## Multi-Line Comment
-
-A multi-line comment begins with `::` and ends with another `::`.
-
-Everything between the opening and closing symbols is ignored.
-
-### Example
-
-```kl
-::
-This is a
-multi-line
-comment.
-::
-
-KL age = 20
-```
-
----
-
-# 8. Whitespace
-
-Karayel ignores unnecessary whitespace characters except for **NEWLINE**.
-
-The following characters are ignored during lexical analysis:
-
-- Space
-- Tab
-- Carriage Return (`\r`)
-
-A **NEWLINE** is treated as a token because Karayel uses a new line to terminate statements.
-
-### Example
-
-The following two statements are equivalent.
-
-```kl
-KL age=20
-```
-
-```kl
-KL     age     =     20
-```
+### Whitespace
+Standard whitespace characters (spaces, tabs `\t`, carriage returns `\r`, and newlines `\n`) are skipped automatically by the lexical analyzer.
 
 ---
 
 # 9. Token Summary
 
-## Keywords
+### Reserved Keywords & Utilities
+    KL
+    SHOW
+    SCAN
+    TASK
+    GIVE
+    IF
+    ELIF
+    ELSE
+    WHILE
+    FOR
+    FACTORIAL
+    IS_PRIME
+    FIBO
+    MAX
+    MIN
+    AVG
 
-```
+### Literals & Identifiers
+    INTEGER
+    FLOAT
+    STRING
+    IDENTIFIER
 
-KL
-SHOW
-SCAN
-TASK
-GIVE
-IF
-ELIF
-ELSE
-WHILE
-FOR
-TRUE
-FALSE
+### Operators
+    +   -   *   /   %
+    =   +=  -=  *=  /=
+    ==  !=  >   <   >=  <=
+    &&  ||  !
 
-```
+### Delimiters
+    (   )
+    {   }
+    ,   ;
 
-## Literals
-
-```
-
-INTEGER
-FLOAT
-STRING
-CHARACTER
-
-```
-
-## Identifier
-
-```
-
-IDENTIFIER
-
-```
-
-## Operators
-
-```
-
-PLUS (+)
-MINUS (-)
-MULTIPLY (*)
-DIVIDE (/)
-MODULUS (%)
-
-ASSIGN (=)
-PLUS_ASSIGN (+=)
-MINUS_ASSIGN (-=)
-MULTIPLY_ASSIGN (*=)
-DIVIDE_ASSIGN (/=)
-
-INCREMENT (++)
-DECREMENT (--)
-
-EQUAL (==)
-NOT_EQUAL (!=)
-
-GREATER (>)
-LESS (<)
-
-GREATER_EQUAL (>=)
-LESS_EQUAL (<=)
-
-AND (&&)
-OR (||)
-NOT (!)
-
-```
-
-## Delimiters
-
-```
-
-LPAREN
-RPAREN
-
-LBRACE
-RBRACE
-
-COMMA
-
-NEWLINE
-
-```
-
-## End of File
-
-```
-
-EOF
-
-```
-
----
-
-This document defines every lexical token used in Karayel Programming Language Version 1.0.
+### Special Tokens
+    YYEOF (End of File)
