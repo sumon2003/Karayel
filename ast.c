@@ -3,11 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "ast.h"
-
-// Symbol Table Helper Declarations (if needed)
-extern char* getSymbolValue(const char* name);
-extern void insertSymbol(const char* name, int type);
-extern void updateSymbolValue(const char* name, const char* value, int type);
+#include "symbol_table.h"
 
 // AST Node Creators
 ASTNode* createNumNode(int val) {
