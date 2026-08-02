@@ -39,11 +39,13 @@ Designed with clean syntax and native math/statistical utilities, Karayel simpli
 
 The compiler is structured into four distinct modular pipeline stages:
 
-```Bash
-┌─────────────────┐     ┌──────────────┐     ┌────────────────┐     ┌─────────────────┐
-│   Source Code   │ ──> │ Lexer (Flex) │ ──> │ Parser (Bison) │ ──> │ AST Execution   │
-│   (*.kl File)   │     │ Tokenization │     │ Syntax Check   │     │ & Runtime Engine│
-└─────────────────┘     └──────────────┘     └────────────────┘     └─────────────────┘
+    ```Bash
+    ┌─────────────────┐     ┌──────────────┐     ┌────────────────┐     ┌─────────────────┐
+    │   Source Code   │ ──> │ Lexer (Flex) │ ──> │ Parser (Bison) │ ──> │ AST Execution   │
+    │   (*.kl File)   │     │ Tokenization │     │ Syntax Check   │     │ & Runtime Engine│
+    └─────────────────┘     └──────────────┘     └────────────────┘     └─────────────────┘
+    
+    ```
 
 1. **Lexical Analysis (`lexer.l`):** Tokenizes input files, filters out whitespace/comments, tracks line numbers (`yylineno`), and maps string patterns to defined tokens.
 2. **Parsing & Syntax Validation (`parser.y`):** Uses Context-Free Grammar (CFG) rules in Bison to build structural relationships, handle operator precedence, and generate AST nodes.
