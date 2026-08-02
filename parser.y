@@ -2,7 +2,7 @@
 /*
 =========================================================
     Karayel Programming Language
-    Parser (Bison) - Multiple Arguments SHOW Support
+    Parser (Bison) - Extended with Smart Math & Utilities
 =========================================================
 */
 
@@ -32,6 +32,9 @@ ASTNode *rootNode = NULL;
 %token WHILE FOR
 %token TASK GIVE
 %token TRUE FALSE
+
+/* New Math & Stat Analytics Tokens */
+%token FACTORIAL MAX MIN AVG IS_PRIME FIBO
 
 %token <string> IDENTIFIER
 %token <string> STRING
@@ -167,6 +170,27 @@ expression
     | expression AND expression { $$ = createBinOpNode("&&", $1, $3); }
     | expression OR expression { $$ = createBinOpNode("||", $1, $3); }
     | NOT expression { $$ = createUnOpNode("!", $2); }
+    
+    /* --- New Built-in Math & Stat Utilities Expressions --- */
+    | FACTORIAL LPAREN expression RPAREN { 
+        $$ = createUnOpNode("FACTORIAL", $3); 
+    }
+    | IS_PRIME LPAREN expression RPAREN { 
+        $$ = createUnOpNode("IS_PRIME", $3); 
+    }
+    | FIBO LPAREN expression RPAREN { 
+        $$ = createUnOpNode("FIBO", $3); 
+    }
+    | MAX LPAREN argument_list RPAREN { 
+        $$ = createUnOpNode("MAX", $3); 
+    }
+    | MIN LPAREN argument_list RPAREN { 
+        $$ = createUnOpNode("MIN", $3); 
+    }
+    | AVG LPAREN argument_list RPAREN { 
+        $$ = createUnOpNode("AVG", $3); 
+    }
+
     | LPAREN expression RPAREN { $$ = $2; }
     | scan_expression { $$ = $1; }
     | IDENTIFIER { $$ = createIdNode($1); }

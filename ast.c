@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "ast.h"
 
+// Symbol Table Helper Declarations (if needed)
+extern char* getSymbolValue(const char* name);
+extern void insertSymbol(const char* name, int type);
+extern void updateSymbolValue(const char* name, const char* value, int type);
+
+// AST Node Creators
 ASTNode* createNumNode(int val) {
     ASTNode* node = calloc(1, sizeof(ASTNode));
     node->type = NODE_NUMBER;
@@ -145,16 +152,45 @@ void appendStatement(ASTNode* compound, ASTNode* stmt) {
     compound->statements[compound->statement_count - 1] = stmt;
 }
 
-// Expression Evaluation
+// --- Helper Functions for Math Utilities ---
+
+static int computeFactorial(int n) {
+    if (n <= 1) return 1;
+    int fact = 1;
+    for (int i = 2; i <= n; i++) fact *= i;
+    return fact;
+}
+
+static int checkIsPrime(int n) {
+    if (n <= 1) return 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return 0;
+    }
+    return 1;
+}
+
+static int computeFibo(int n) {
+    if (n <= 0) return 0;
+    if (n == 1) return 1;
+    int a = 0, b = 1, c = 0;
+    for (int i = 2; i <= n; i++) {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+    return c;
+}
+
+// --- Expression Evaluation ---
+
 int evalExpr(ASTNode* node) {
     if (!node) return 0;
 
     if (node->type == NODE_NUMBER) return node->int_val;
 
-    // --- SCAN (Runtime Input) Support ---
+    // SCAN Support
     if (node->type == NODE_SCAN) {
         if (node->string_val) {
-            // যদি SCAN("Enter number: ") এর মতো মেসেজ থাকে
             char* str = node->string_val;
             int len = strlen(str);
             if (len >= 2 && str[0] == '"' && str[len - 1] == '"') {
@@ -165,7 +201,7 @@ int evalExpr(ASTNode* node) {
             fflush(stdout);
         }
         int val = 0;
-        scanf("%d", &val); // ইউজার থেকে ইনপুট নেওয়া
+        scanf("%d", &val);
         return val;
     }
     
@@ -174,8 +210,54 @@ int evalExpr(ASTNode* node) {
         return val ? atoi(val) : 0;
     }
     
+    // Unary & Built-in Math Utilities
     if (node->type == NODE_UNARY_OP) {
         if (strcmp(node->op, "!") == 0) return !evalExpr(node->left);
+        if (strcmp(node->op, "FACTORIAL") == 0) return computeFactorial(evalExpr(node->left));
+        if (strcmp(node->op, "IS_PRIME") == 0) return checkIsPrime(evalExpr(node->left));
+        if (strcmp(node->op, "FIBO") == 0) return computeFibo(evalExpr(node->left));
+
+        // MAX, MIN, AVG Handling (where node->left is compound argument list)
+        if (strcmp(node->op, "MAX") == 0) {
+            ASTNode* args = node->left;
+            if (!args) return 0;
+            if (args->type == NODE_COMPOUND && args->statement_count > 0) {
+                int maxVal = evalExpr(args->statements[0]);
+                for (int i = 1; i < args->statement_count; i++) {
+                    int v = evalExpr(args->statements[i]);
+                    if (v > maxVal) maxVal = v;
+                }
+                return maxVal;
+            }
+            return evalExpr(args);
+        }
+
+        if (strcmp(node->op, "MIN") == 0) {
+            ASTNode* args = node->left;
+            if (!args) return 0;
+            if (args->type == NODE_COMPOUND && args->statement_count > 0) {
+                int minVal = evalExpr(args->statements[0]);
+                for (int i = 1; i < args->statement_count; i++) {
+                    int v = evalExpr(args->statements[i]);
+                    if (v < minVal) minVal = v;
+                }
+                return minVal;
+            }
+            return evalExpr(args);
+        }
+
+        if (strcmp(node->op, "AVG") == 0) {
+            ASTNode* args = node->left;
+            if (!args) return 0;
+            if (args->type == NODE_COMPOUND && args->statement_count > 0) {
+                int sum = 0;
+                for (int i = 0; i < args->statement_count; i++) {
+                    sum += evalExpr(args->statements[i]);
+                }
+                return sum / args->statement_count;
+            }
+            return evalExpr(args);
+        }
     }
 
     if (node->type == NODE_BINARY_OP) {
@@ -199,7 +281,7 @@ int evalExpr(ASTNode* node) {
     return 0;
 }
 
-// Print single value in SHOW
+// --- Smart Auto-Casting Print for SHOW ---
 static void printValue(ASTNode* node) {
     if (!node) return;
 
