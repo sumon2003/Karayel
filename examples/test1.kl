@@ -1,0 +1,11 @@
+KL num = 5
+SHOW("Factorial of ", num, " is: ", FACTORIAL(num))
+
+KL p = 17
+SHOW("Is ", p, " Prime? ", IS_PRIME(p))
+
+SHOW("10th Fibonacci Number: ", FIBO(10))
+
+SHOW("Max value is: ", MAX(10, 45, 23, 89, 12))
+SHOW("Min value is: ", MIN(10, 45, 23, 89, 12))
+SHOW("Average value is: ", AVG(10, 20, 30))
