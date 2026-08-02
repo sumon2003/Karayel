@@ -45,7 +45,15 @@ WHITESPACE      [ \t\r]+
 {WHITESPACE} {
 }
 
+"FACTORIAL" { return FACTORIAL; }
+"MAX"       { return MAX; }
+"MIN"       { return MIN; }
+"AVG"       { return AVG; }
+"IS_PRIME"  { return IS_PRIME; }
+"FIBO"      { return FIBO; }
+
 {FLOAT_LITERAL} {
+    yylval.string = strdup(yytext);
     return FLOAT;
 }
 
@@ -98,6 +106,7 @@ WHITESPACE      [ \t\r]+
 "{"  { return LBRACE; }
 "}"  { return RBRACE; }
 ","  { return COMMA; }
+";"  { return SEMICOLON; }
 
 \n {
     return NEWLINE;

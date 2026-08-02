@@ -2,7 +2,7 @@
 /*
 =========================================================
     Karayel Programming Language
-    Parser (Bison) - Production Ready & Flexible Newline
+    Parser (Bison) - Multiple Arguments SHOW Support
 =========================================================
 */
 
@@ -10,9 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symbol_table.h"
+#include "ast.h"
 
 void yyerror(const char *message);
 int yylex(void);
+
+ASTNode *rootNode = NULL;
 
 %}
 
@@ -20,10 +23,7 @@ int yylex(void);
 {
     char *string;
     int number;
-    struct {
-        char *val;
-        int type;
-    } expr;
+    struct ASTNode *node;
 }
 
 %token KL
@@ -39,9 +39,6 @@ int yylex(void);
 %token <number> INTEGER
 %token <string> FLOAT
 
-%type <expr> expression
-%type <string> scan_expression
-
 %token PLUS MINUS MULTIPLY DIVIDE MODULUS
 %token ASSIGN
 %token PLUS_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
@@ -52,8 +49,12 @@ int yylex(void);
 %token AND OR NOT
 %token LPAREN RPAREN
 %token LBRACE RBRACE
-%token COMMA
+%token COMMA SEMICOLON
 %token NEWLINE
+
+%type <node> program statements statement declaration assignment show_statement 
+%type <node> if_statement else_block while_statement for_statement for_init 
+%type <node> expression scan_expression block task_definition function_call return_statement argument_list
 
 %left OR
 %left AND
@@ -68,8 +69,17 @@ int yylex(void);
 %%
 
 program
-    :
-    | program statement
+    : statements { rootNode = $1; }
+    ;
+
+statements
+    : { $$ = createCompoundNode(); }
+    | statements statement {
+        if ($2 != NULL) {
+            appendStatement($1, $2);
+        }
+        $$ = $1;
+    }
     ;
 
 opt_newlines
@@ -77,194 +87,160 @@ opt_newlines
     | opt_newlines NEWLINE
     ;
 
+opt_semicolon
+    :
+    | SEMICOLON
+    ;
+
 declaration
-    : KL IDENTIFIER {
-        insertSymbol($2, TYPE_UNKNOWN);
+    : KL IDENTIFIER { 
+        $$ = createDeclNode($2, NULL); 
     }
-    | KL IDENTIFIER ASSIGN expression {
-        insertSymbol($2, (DataType)$4.type);
-        updateSymbolValue($2, $4.val, (DataType)$4.type);
+    | KL IDENTIFIER ASSIGN expression { 
+        $$ = createDeclNode($2, $4); 
     }
     ;
 
 assignment
-    : IDENTIFIER ASSIGN expression {
-        updateSymbolValue($1, $3.val, (DataType)$3.type);
+    : IDENTIFIER ASSIGN expression { 
+        $$ = createAssignNode($1, $3); 
     }
-    | IDENTIFIER PLUS_ASSIGN expression
-    | IDENTIFIER MINUS_ASSIGN expression
-    | IDENTIFIER MULTIPLY_ASSIGN expression
-    | IDENTIFIER DIVIDE_ASSIGN expression
-    | IDENTIFIER INCREMENT
-    | IDENTIFIER DECREMENT
+    | IDENTIFIER PLUS_ASSIGN expression {
+        $$ = createAssignNode($1, createBinOpNode("+", createIdNode($1), $3));
+    }
+    | IDENTIFIER MINUS_ASSIGN expression {
+        $$ = createAssignNode($1, createBinOpNode("-", createIdNode($1), $3));
+    }
+    | IDENTIFIER MULTIPLY_ASSIGN expression {
+        $$ = createAssignNode($1, createBinOpNode("*", createIdNode($1), $3));
+    }
+    | IDENTIFIER DIVIDE_ASSIGN expression {
+        $$ = createAssignNode($1, createBinOpNode("/", createIdNode($1), $3));
+    }
+    | IDENTIFIER INCREMENT {
+        $$ = createAssignNode($1, createBinOpNode("+", createIdNode($1), createNumNode(1)));
+    }
+    | IDENTIFIER DECREMENT {
+        $$ = createAssignNode($1, createBinOpNode("-", createIdNode($1), createNumNode(1)));
+    }
     ;
 
 show_statement
-    : SHOW LPAREN expression RPAREN {
-        if ($3.val != NULL) {
-            if ($3.val[0] == '"') {
-                int len = strlen($3.val);
-                if (len > 1 && $3.val[len-1] == '"') {
-                    $3.val[len-1] = '\0';
-                    printf("%s\n", $3.val + 1);
-                } else {
-                    printf("%s\n", $3.val);
-                }
-            } else {
-                printf("%s\n", $3.val);
-            }
-        } else {
-            printf("nil\n");
-        }
+    : SHOW LPAREN argument_list RPAREN { 
+        $$ = createShowNode($3); 
+    }
+    ;
+
+argument_list
+    : expression {
+        ASTNode* list = createCompoundNode();
+        appendStatement(list, $1);
+        $$ = list;
+    }
+    | argument_list COMMA expression {
+        appendStatement($1, $3);
+        $$ = $1;
     }
     ;
 
 scan_expression
     : SCAN LPAREN RPAREN {
-        static char input_buf[256];
-        if (fgets(input_buf, sizeof(input_buf), stdin)) {
-            input_buf[strcspn(input_buf, "\r\n")] = 0;
-        }
-        $$ = strdup(input_buf);
+        $$ = createScanNode(NULL);
     }
     | SCAN LPAREN STRING RPAREN {
-        static char input_buf[256];
-        if ($3 != NULL) {
-            char prompt[256];
-            strncpy(prompt, $3, sizeof(prompt));
-            int len = strlen(prompt);
-            if (len > 1 && prompt[len-1] == '"') prompt[len-1] = '\0';
-            if (prompt[0] == '"') printf("%s", prompt + 1);
-            else printf("%s", prompt);
-            fflush(stdout);
-        }
-        if (fgets(input_buf, sizeof(input_buf), stdin)) {
-            input_buf[strcspn(input_buf, "\r\n")] = 0;
-        }
-        $$ = strdup(input_buf);
+        $$ = createScanNode($3);
     }
     ;
 
 expression
-    : expression PLUS expression { $$.val = $1.val; $$.type = $1.type; }
-    | expression MINUS expression { $$.val = $1.val; $$.type = $1.type; }
-    | expression MULTIPLY expression { $$.val = $1.val; $$.type = $1.type; }
-    | expression DIVIDE expression { $$.val = $1.val; $$.type = $1.type; }
-    | expression MODULUS expression { $$.val = $1.val; $$.type = $1.type; }
-    | expression GREATER expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | expression LESS expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | expression GREATER_EQUAL expression {
-        int val1 = atoi($1.val);
-        int val2 = atoi($3.val);
-        $$.val = (val1 >= val2) ? "true" : "false";
-        $$.type = TYPE_BOOL;
-    }
-    | expression LESS_EQUAL expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | expression EQUAL expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | expression NOT_EQUAL expression { $$.val = "false"; $$.type = TYPE_BOOL; }
-    | expression AND expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | expression OR expression { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | NOT expression { $$.val = "false"; $$.type = TYPE_BOOL; }
+    : expression PLUS expression { $$ = createBinOpNode("+", $1, $3); }
+    | expression MINUS expression { $$ = createBinOpNode("-", $1, $3); }
+    | expression MULTIPLY expression { $$ = createBinOpNode("*", $1, $3); }
+    | expression DIVIDE expression { $$ = createBinOpNode("/", $1, $3); }
+    | expression MODULUS expression { $$ = createBinOpNode("%", $1, $3); }
+    | expression GREATER expression { $$ = createBinOpNode(">", $1, $3); }
+    | expression LESS expression { $$ = createBinOpNode("<", $1, $3); }
+    | expression GREATER_EQUAL expression { $$ = createBinOpNode(">=", $1, $3); }
+    | expression LESS_EQUAL expression { $$ = createBinOpNode("<=", $1, $3); }
+    | expression EQUAL expression { $$ = createBinOpNode("==", $1, $3); }
+    | expression NOT_EQUAL expression { $$ = createBinOpNode("!=", $1, $3); }
+    | expression AND expression { $$ = createBinOpNode("&&", $1, $3); }
+    | expression OR expression { $$ = createBinOpNode("||", $1, $3); }
+    | NOT expression { $$ = createUnOpNode("!", $2); }
     | LPAREN expression RPAREN { $$ = $2; }
-    | scan_expression {
-        $$.val = $1;
-        $$.type = TYPE_STRING;
-    }
-    | IDENTIFIER {
-        int idx = searchSymbol($1);
-        if (idx == -1) {
-            printf("Semantic Error: Variable '%s' used before declaration.\n", $1);
-            $$.val = "nil";
-            $$.type = TYPE_UNKNOWN;
-        } else {
-            char* val = getSymbolValue($1);
-            $$.val = val ? strdup(val) : "nil";
-            $$.type = getSymbolType($1);
-        }
-    }
-    | INTEGER {
-        char buf[32];
-        snprintf(buf, sizeof(buf), "%d", $1);
-        $$.val = strdup(buf);
-        $$.type = TYPE_INT;
-    }
-    | FLOAT { 
-        $$.val = $1; 
-        $$.type = TYPE_FLOAT;
-    }
-    | STRING { 
-        $$.val = $1; 
-        $$.type = TYPE_STRING;
-    }
-    | CHARACTER { 
-        $$.val = $1; 
-        $$.type = TYPE_STRING;
-    }
-    | TRUE { $$.val = "true"; $$.type = TYPE_BOOL; }
-    | FALSE { $$.val = "false"; $$.type = TYPE_BOOL; }
+    | scan_expression { $$ = $1; }
+    | IDENTIFIER { $$ = createIdNode($1); }
+    | INTEGER { $$ = createNumNode($1); }
+    | FLOAT { $$ = createFloatNode($1); }
+    | STRING { $$ = createStringNode($1); }
+    | CHARACTER { $$ = createStringNode($1); }
+    | TRUE { $$ = createNumNode(1); }
+    | FALSE { $$ = createNumNode(0); }
     ;
 
 block
-    : LBRACE opt_newlines statements RBRACE
-    ;
-
-statements
-    :
-    | statements statement
+    : LBRACE opt_newlines statements RBRACE { $$ = $3; }
     ;
 
 if_statement
-    : IF LPAREN expression RPAREN opt_newlines block opt_newlines else_block
-    | IF LPAREN expression RPAREN opt_newlines block
+    : IF LPAREN expression RPAREN opt_newlines block opt_newlines else_block {
+        $$ = createIfNode($3, $6, $8);
+    }
+    | IF LPAREN expression RPAREN opt_newlines block {
+        $$ = createIfNode($3, $6, NULL);
+    }
     ;
 
 else_block
-    : ELSE opt_newlines block
+    : ELSE opt_newlines block { $$ = $3; }
     ;
 
 while_statement
-    : WHILE LPAREN expression RPAREN opt_newlines block
+    : WHILE LPAREN expression RPAREN opt_newlines block {
+        $$ = createWhileNode($3, $6);
+    }
+    ;
+
+for_init
+    : declaration { $$ = $1; }
+    | assignment { $$ = $1; }
     ;
 
 for_statement
-    : FOR LPAREN assignment NEWLINE expression NEWLINE assignment RPAREN opt_newlines block
+    : FOR LPAREN for_init SEMICOLON expression SEMICOLON assignment RPAREN opt_newlines block {
+        $$ = createForNode($3, $5, $7, $10);
+    }
     ;
 
 task_definition
-    : TASK IDENTIFIER LPAREN RPAREN opt_newlines block
-    | TASK IDENTIFIER LPAREN parameter_list RPAREN opt_newlines block
-    ;
-
-parameter_list
-    : IDENTIFIER
-    | parameter_list COMMA IDENTIFIER
+    : TASK IDENTIFIER LPAREN RPAREN opt_newlines block {
+        $$ = createTaskNode($2, NULL, $6);
+    }
     ;
 
 function_call
-    : IDENTIFIER LPAREN RPAREN
-    | IDENTIFIER LPAREN argument_list RPAREN
-    ;
-
-argument_list
-    : expression
-    | argument_list COMMA expression
+    : IDENTIFIER LPAREN RPAREN {
+        $$ = createCallNode($1, NULL);
+    }
     ;
 
 return_statement
-    : GIVE expression
+    : GIVE expression {
+        $$ = createReturnNode($2);
+    }
     ;
 
 statement
-    : declaration opt_newlines
-    | assignment opt_newlines
-    | show_statement opt_newlines
-    | if_statement opt_newlines
-    | while_statement opt_newlines
-    | for_statement opt_newlines
-    | task_definition opt_newlines
-    | function_call opt_newlines
-    | return_statement opt_newlines
-    | NEWLINE
+    : declaration opt_semicolon opt_newlines { $$ = $1; }
+    | assignment opt_semicolon opt_newlines { $$ = $1; }
+    | show_statement opt_semicolon opt_newlines { $$ = $1; }
+    | if_statement opt_newlines { $$ = $1; }
+    | while_statement opt_newlines { $$ = $1; }
+    | for_statement opt_newlines { $$ = $1; }
+    | task_definition opt_newlines { $$ = $1; }
+    | function_call opt_semicolon opt_newlines { $$ = $1; }
+    | return_statement opt_semicolon opt_newlines { $$ = $1; }
+    | NEWLINE { $$ = NULL; }
     ;
 
 %%

@@ -1,2 +1,13 @@
-KL name = SCAN("Enter your name: ")
-SHOW(name)
+:: 1. Variable Declaration & Input (I/O)
+KL limit = SCAN("Enter loop limit: ")
+
+:: 2. Control Flow (FOR Loop) & Arithmetic Operators
+FOR (KL i = 1; i <= limit; i++) {
+    
+    :: 3. Control Flow (IF/ELSE) & Logical Operators
+    IF (i % 2 == 0) {
+        SHOW(i, " is Even")
+    } ELSE {
+        SHOW(i, " is Odd")
+    }
+}
